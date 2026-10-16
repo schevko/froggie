@@ -114,17 +114,12 @@ bun start
 ```
 Froggie's engine will start at `http://127.0.0.1:4321`.
 
-### 2. Build macOS Universal `.app` & `.dmg`
+### 2. Build macOS Universal `.app`, `.dmg` & Windows 64-Bit `.exe` Release
 ```bash
-bash scripts/build-universal-app.sh
+bash scripts/build-release.sh
 ```
 
-### 3. Build Windows 64-Bit Standalone `.exe` & Installer `.zip`
-```bash
-bash scripts/build-windows.sh
-```
-
-### 4. Customize Application Icon
+### 3. Customize Application Icon
 ```bash
 bash scripts/set-icon.sh /path/to/your-logo.png
 ```
@@ -136,7 +131,8 @@ bash scripts/set-icon.sh /path/to/your-logo.png
 ```text
 froggie/
 ├── engine/
-│   ├── crawler.ts                # Streaming HTMLRewriter spider, 49-BitSet, MinHash, PageRank, CWV Lab
+│   ├── algorithms.ts             # 49-BitSet, 64-Hash MinHash, Aho-Corasick & 18-Iter PageRank
+│   ├── crawler.ts                # Streaming HTMLRewriter spider, Custom Extraction & CWV Lab
 │   └── server.ts                 # Bun HTTP + WebSocket real-time telemetry & SQLite WAL server
 ├── ui/
 │   ├── index.html                # Desktop workbench UI shell
@@ -145,9 +141,8 @@ froggie/
 ├── macos/
 │   └── main.swift                # Native macOS Cocoa + WKWebView wrapper & process lifecycle manager
 └── scripts/
-    ├── build-universal-app.sh    # Compiles arm64 + x86_64 Universal macOS .app & .dmg
-    ├── build-windows.sh          # Cross-compiles standalone Windows x64 Froggie.exe & Setup .zip
-    ├── generate_icon.swift       # Procedural 1024x1024 retina .icns generator
+    ├── build-release.sh          # Compiles Universal macOS .app/.dmg & standalone Windows x64 .exe
+    ├── generate-default-icon.swift # Procedural 1024x1024 retina .icns generator
     └── set-icon.sh               # 1-command custom PNG-to-.icns icon replacer
 ```
 
