@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>CFBundleExecutable</key>
+  <string>Froggie</string>
+  <key>CFBundleIdentifier</key>
+  <string>com.schevko.froggie</string>
+  <key>CFBundleName</key>
+  <string>Froggie</string>
+  <key>CFBundleDisplayName</key>
+  <string>Froggie</string>
+  <key>CFBundleVersion</key>
+  <string>2.2.0</string>
+  <key>CFBundleShortVersionString</key>
+  <string>2.2</string>
+  <key>CFBundlePackageType</key>
+  <string>APPL</string>
+  <key>CFBundleIconFile</key>
+  <string>AppIcon</string>
+  <key>LSMinimumSystemVersion</key>
+  <string>13.0</string>
+  <key>NSHighResolutionCapable</key>
+  <true/>
+  <key>NSHumanReadableCopyright</key>
+  <string>Copyright © 2026 Şevket Erer (schevko). MIT License.</string>
+</dict>
+</plist>

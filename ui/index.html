@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Froggie v2.2 — Native Desktop SEO Spider</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <!-- Top Command & Crawl Bar -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-logo" title="Froggie v2.2 — Open Source MIT">
+        <svg class="svg-icon" style="width:17px;height:17px;" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="9"/>
+          <circle cx="9" cy="10" r="1.4" fill="currentColor"/>
+          <circle cx="15" cy="10" r="1.4" fill="currentColor"/>
+          <path d="M8.5 15c1.5 1.5 5.5 1.5 7 0"/>
+        </svg>
+      </div>
+      <span class="brand-title">Froggie</span>
+      <span class="brand-tag">v2.2</span>
+    </div>
+
+    <!-- Crawl Mode Selector -->
+    <div class="mode-selector">
+      <select id="crawlModeSelect" class="select-control">
+        <option value="spider" id="optModeSpider">Site Tarama (Spider)</option>
+        <option value="list" id="optModeList">Liste Modu (List)</option>
+        <option value="sitemap" id="optModeSitemap">Site Haritası (Sitemap)</option>
+      </select>
+    </div>
+
+    <form id="crawlForm" class="url-bar-form">
+      <div class="url-input-wrap" id="urlInputContainer">
+        <span class="url-prefix" id="urlPrefixLabel">URL</span>
+        <input
+          type="text"
+          id="urlInput"
+          placeholder="Taranacak web sitesini girin (örn. https://books.toscrape.com)..."
+          value=""
+          autocomplete="off"
+          spellcheck="false"
+        />
+      </div>
+      <button type="button" id="btnOpenListModal" class="btn btn-secondary hidden">
+        <svg class="svg-icon" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        <span id="lblEditListBtn">URL Listesi</span> (<span id="listUrlCount">0</span>)
+      </button>
+      <button type="submit" id="btnStart" class="btn btn-primary">
+        <svg class="svg-icon" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="currentColor"/></svg>
+        <span id="lblStartBtn">Başlat</span>
+      </button>
+      <button type="button" id="btnPause" class="btn btn-secondary" disabled>Duraklat</button>
+      <button type="button" id="btnStop" class="btn btn-secondary" disabled>Durdur</button>
+      <button type="button" id="btnClear" class="btn btn-ghost">Temizle</button>
+    </form>
+
+    <div class="topbar-actions">
+      <button type="button" id="btnDiffModal" class="btn btn-tool">
+        <svg class="svg-icon" viewBox="0 0 24 24"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+        <span id="lblDiffBtn">Karşılaştır</span>
+      </button>
+      <button type="button" id="btnExportCsv" class="btn btn-tool">
+        <svg class="svg-icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>CSV</span>
+      </button>
+      <button type="button" id="btnExportSitemap" class="btn btn-tool">
+        <svg class="svg-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <span>Sitemap</span>
+      </button>
+      <button type="button" id="btnConfigModal" class="btn btn-tool">
+        <svg class="svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span id="lblConfigBtn">Ayarlar</span>
+        <span id="activeLangBadge" class="badge badge-ok" style="font-size:10px;padding:0 5px;">TR</span>
+      </button>
+      <button type="button" id="btnAboutModal" class="btn btn-tool" title="Hakkında / About">
+        <svg class="svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <span id="lblAboutBtn">Hakkında</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Primary Top Category Tabs -->
+  <nav class="primary-tabs" id="primaryTabs">
+    <button class="ptab active" data-tab="internal" data-default-filter="internal">
+      <span data-i18n-tab="internal">İç Bağlantılar</span> <span class="tab-count" id="tc-internal">0</span>
+    </button>
+    <button class="ptab" data-tab="external" data-default-filter="external">
+      <span data-i18n-tab="external">Dış Bağlantılar</span> <span class="tab-count" id="tc-external">0</span>
+    </button>
+    <button class="ptab" data-tab="security" data-default-filter="internal">
+      <span data-i18n-tab="security">Güvenlik</span> <span class="tab-count" id="tc-security">0</span>
+    </button>
+    <button class="ptab" data-tab="response_codes" data-default-filter="all">
+      <span data-i18n-tab="response_codes">Durum Kodları</span> <span class="tab-count" id="tc-all">0</span>
+    </button>
+    <button class="ptab" data-tab="url_quality" data-default-filter="internal">
+      <span data-i18n-tab="url_quality">URL Kalitesi</span> <span class="tab-count" id="tc-url">0</span>
+    </button>
+    <button class="ptab" data-tab="page_titles" data-default-filter="internal">
+      <span data-i18n-tab="page_titles">Sayfa Başlıkları</span> <span class="tab-count" id="tc-titles">0</span>
+    </button>
+    <button class="ptab" data-tab="meta_description" data-default-filter="internal">
+      <span data-i18n-tab="meta_description">Meta Açıklama</span> <span class="tab-count" id="tc-meta">0</span>
+    </button>
+    <button class="ptab" data-tab="h1" data-default-filter="internal">
+      <span data-i18n-tab="h1">H1 Başlıkları</span> <span class="tab-count" id="tc-h1">0</span>
+    </button>
+    <button class="ptab" data-tab="h2" data-default-filter="internal">
+      <span data-i18n-tab="h2">H2 Başlıkları</span> <span class="tab-count" id="tc-h2">0</span>
+    </button>
+    <button class="ptab" data-tab="canonicals" data-default-filter="internal">
+      <span data-i18n-tab="canonicals">Canonical</span> <span class="tab-count" id="tc-canonicals">0</span>
+    </button>
+    <button class="ptab" data-tab="hreflang" data-default-filter="internal">
+      <span data-i18n-tab="hreflang">Hreflang & Sayfalama</span> <span class="tab-count" id="tc-hreflang">0</span>
+    </button>
+    <button class="ptab" data-tab="images" data-default-filter="images_missing_alt">
+      <span data-i18n-tab="images">Görseller</span> <span class="tab-count" id="tc-images">0</span>
+    </button>
+    <button class="ptab" data-tab="directives" data-default-filter="directives_noindex">
+      <span data-i18n-tab="directives">Direktifler</span> <span class="tab-count" id="tc-directives">0</span>
+    </button>
+    <button class="ptab" data-tab="structured_data" data-default-filter="structured_data_has">
+      <span data-i18n-tab="structured_data">Yapısal Veri</span> <span class="tab-count" id="tc-schema">0</span>
+    </button>
+    <button class="ptab" data-tab="near_duplicates" data-default-filter="near_duplicates">
+      <span data-i18n-tab="near_duplicates">Kopya İçerik</span> <span class="tab-count" id="tc-dups">0</span>
+    </button>
+    <button class="ptab" data-tab="custom" data-default-filter="custom_search_matched">
+      <span data-i18n-tab="custom">Özel Arama & Kazıma</span> <span class="tab-count" id="tc-custom">0</span>
+    </button>
+    <button class="ptab" data-tab="pagespeed" data-default-filter="internal">
+      <svg class="svg-icon" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      <span data-i18n-tab="pagespeed">PageSpeed & CWV</span>
+    </button>
+    <button class="ptab" data-tab="force_graph" data-default-filter="internal">
+      <svg class="svg-icon" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      <span data-i18n-tab="force_graph">Link Grafiği</span>
+    </button>
+  </nav>
+
+  <!-- Main 3-Pane Split Workbench -->
+  <main class="workbench">
+    <section class="left-workarea">
+      <!-- Sub-Filter & Search Toolbar -->
+      <div class="table-toolbar">
+        <div class="subfilter-group">
+          <label for="subFilterSelect" class="toolbar-label" id="lblFilterSelect">Filtre:</label>
+          <select id="subFilterSelect" class="select-control"></select>
+        </div>
+
+        <div class="search-group">
+          <input
+            type="text"
+            id="tableSearchInput"
+            class="search-input"
+            placeholder="Tabloda ara (URL, Başlık, H1, Durum Kodu)..."
+          />
+        </div>
+
+        <!-- PageSpeed Bulk & Strategy Controls (Shown when PageSpeed tab is active) -->
+        <div class="pagespeed-toolbar-group hidden" id="psiToolbarGroup">
+          <select id="psiStrategySelect" class="select-control">
+            <option value="mobile" id="optPsiMobile">Mobil (CWV)</option>
+            <option value="desktop" id="optPsiDesktop">Masaüstü (CWV)</option>
+          </select>
+          <button type="button" id="btnBulkPageSpeed" class="btn btn-primary" style="height:28px;font-size:11.5px;">
+            <svg class="svg-icon" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            <span id="lblBulkPsiBtn">Tüm Sayfalarda PageSpeed Testi Çalıştır</span>
+          </button>
+        </div>
+
+        <div class="table-Result-meta">
+          <span id="lblShownRows">Gösterilen:</span> <strong id="shownCount">0</strong>
+        </div>
+      </div>
+
+      <!-- Main Data Grid Container -->
+      <div class="grid-viewport" id="gridViewport">
+        <table class="data-grid" id="mainDataGrid">
+          <thead id="gridHead"></thead>
+          <tbody id="gridBody"></tbody>
+        </table>
+        <div id="emptyState" class="empty-state">
+          <div class="empty-box">
+            <h3 id="emptyTitle">Froggie v2.2 — Teknik SEO Tarayıcısı</h3>
+            <p id="emptyDesc">Yukarıdaki adres çubuğuna taranacak web sitesini yazıp <strong>Başlat</strong> düğmesine basın. Dil seçimi, Proxy havuzu ve PageSpeed API ayarlarını sağ üstteki <strong>Ayarlar</strong> menüsünden yönetebilirsiniz.</p>
+            <div class="engine-badges">
+              <span>Bun HTMLRewriter (lol_html)</span>
+              <span>49-BitSet Filtre İndeksi</span>
+              <span>PageSpeed & Core Web Vitals</span>
+              <span>PageRank Link Score (0-100)</span>
+              <span>MIT Açık Kaynak Lisansı</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive 2D Force-Directed Link Graph View -->
+        <div id="forceGraphWrapper" class="force-graph-wrapper hidden">
+          <div class="graph-controls">
+            <span id="lblGraphHeader"><strong>Force-Directed Crawl & PageRank Grafiği</strong> — Düğümleri sürükleyebilir veya tıklayıp inceleyebilirsiniz.</span>
+            <div class="graph-legend">
+              <span><span class="legend-dot dot-green"></span>200 Indexable</span>
+              <span><span class="legend-dot dot-amber"></span>3xx / Non-Indexable</span>
+              <span><span class="legend-dot dot-red"></span>4xx / 5xx Error</span>
+            </div>
+            <button type="button" id="btnRefreshGraph" class="btn btn-tool">Yenile</button>
+          </div>
+          <canvas id="forceGraphCanvas"></canvas>
+        </div>
+      </div>
+
+      <!-- Bottom Split Inspector Pane -->
+      <section class="inspector-pane" id="inspectorPane">
+        <div class="inspector-tabs">
+          <button class="itab active" data-itab="details"><span data-i18n-itab="details">URL Detayları</span></button>
+          <button class="itab" data-itab="inlinks"><span data-i18n-itab="inlinks">Gelen Linkler (Inlinks)</span> (<span id="ic-inlinks">0</span>)</button>
+          <button class="itab" data-itab="outlinks"><span data-i18n-itab="outlinks">Çıkan Linkler (Outlinks)</span> (<span id="ic-outlinks">0</span>)</button>
+          <button class="itab" data-itab="serp"><span data-i18n-itab="serp">Canlı SERP Editörü</span></button>
+          <button class="itab" data-itab="ai"><span data-i18n-itab="ai">AI SEO & PageSpeed</span></button>
+          <button class="itab" data-itab="security"><span data-i18n-itab="security">Güvenlik & Başlıklar</span></button>
+          <button class="itab" data-itab="images"><span data-i18n-itab="images">Görseller</span> (<span id="ic-images">0</span>)</button>
+          <button class="itab" data-itab="duplicates"><span data-i18n-itab="duplicates">Yakın Kopyalar</span> (<span id="ic-dups">0</span>)</button>
+          <button class="itab" data-itab="schema"><span data-i18n-itab="schema">Schema JSON-LD</span> (<span id="ic-schema">0</span>)</button>
+          <button class="itab" data-itab="robots">Robots.txt</button>
+          <div class="inspector-selected-url" id="inspectorSelectedUrl">—</div>
+        </div>
+
+        <div class="inspector-body" id="inspectorBody"></div>
+      </section>
+    </section>
+
+    <!-- Right Sidebar: Overview Tree & SEO Issues Audit -->
+    <aside class="right-sidebar">
+      <div class="sidebar-tabs">
+        <button class="stab active" data-stab="overview" id="lblSidebarOverview">Genel Bakış (49 BitSet)</button>
+        <button class="stab" data-stab="issues"><span id="lblSidebarIssues">SEO Sorunları</span> (<span id="issueCountBadge">0</span>)</button>
+      </div>
+
+      <div class="sidebar-content" id="sidebarOverview">
+        <div class="metric-summary-row">
+          <div class="mcard">
+            <span class="mcard-label" id="lblMetricCrawled">Taranan</span>
+            <strong class="mcard-val" id="mCrawled">0</strong>
+          </div>
+          <div class="mcard">
+            <span class="mcard-label" id="lblMetricQueued">Kuyruk</span>
+            <strong class="mcard-val" id="mQueued">0</strong>
+          </div>
+          <div class="mcard">
+            <span class="mcard-label" id="lblMetricSpeed">Hız (URL/sn)</span>
+            <strong class="mcard-val" id="mSpeed">0</strong>
+          </div>
+        </div>
+
+        <div class="overview-tree" id="overviewTree"></div>
+      </div>
+
+      <div class="sidebar-content hidden" id="sidebarIssues">
+        <div class="issues-list" id="issuesList"></div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Bottom Status Bar -->
+  <footer class="statusbar">
+    <div class="status-left">
+      <span class="status-dot" id="statusDot"></span>
+      <span id="statusText">Hazır</span>
+    </div>
+    <div class="status-center">
+      <div class="progress-track">
+        <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+      </div>
+      <span id="progressLabel" class="mono-cell">0%</span>
+    </div>
+    <div class="status-right">
+      <span id="proxyStatusIndicator" style="color:var(--signal-emerald);font-weight:600;">Bağlantı: Doğrudan (Kendi IP'niz)</span>
+      <span>•</span>
+      <span class="mono-cell">Froggie • MIT License • github.com/schevko/froggie</span>
+    </div>
+  </footer>
+
+  <!-- About / Hakkında Modal -->
+  <div id="aboutModal" class="modal-backdrop hidden">
+    <div class="modal-dialog" style="width:760px">
+      <div class="modal-header">
+        <h2 id="aboutModalTitle">Froggie v2.2 — Hakkında & Lisans</h2>
+        <button type="button" id="btnCloseAboutModal" class="btn-close">✕</button>
+      </div>
+      <div class="modal-body" id="aboutModalBody"></div>
+    </div>
+  </div>
+
+  <!-- List Mode URL Input Modal -->
+  <div id="listModeModal" class="modal-backdrop hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 id="lblListModalTitle">Liste Modu — Taranacak URL Listesi (Her satıra 1 URL)</h2>
+        <button type="button" id="btnCloseListModal" class="btn-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="section-hint" id="lblListModalHint">Sadece aşağıya yapıştırdığınız URL'ler taranır (bağlantılar takip edilmez):</p>
+        <textarea id="listModeTextarea" rows="12" style="width:100%;background:var(--bg-canvas);border:1px solid var(--border-strong);color:var(--text-primary);font-family:var(--font-mono);font-size:12px;padding:10px;border-radius:6px;">https://books.toscrape.com/
+https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html
+https://books.toscrape.com/catalogue/tipping-the-velvet_999/index.html
+https://books.toscrape.com/catalogue/soumission_998/index.html
+https://books.toscrape.com/catalogue/sharp-objects_997/index.html</textarea>
+      </div>
+      <div class="modal-footer">
+        <span></span>
+        <button type="button" id="btnSaveListMode" class="btn btn-primary">Listeyi Kaydet ve Taramayı Başlat</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Crawl Comparison (Diff) Modal -->
+  <div id="diffModal" class="modal-backdrop hidden">
+    <div class="modal-dialog" style="width:820px">
+      <div class="modal-header">
+        <h2 id="lblDiffModalTitle">Crawl Karşılaştırma (Crawl Diff) & Kayıtlı Taramalar</h2>
+        <button type="button" id="btnCloseDiffModal" class="btn-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:14px;">
+          <input type="text" id="snapNameInput" placeholder="Mevcut tarama için kayıt adı (örn. Tarama #1 - Öncesi)" style="flex:1;height:32px;background:var(--bg-canvas);border:1px solid var(--border-strong);color:var(--text-primary);padding:0 10px;border-radius:5px;" />
+          <button type="button" id="btnSaveSnapshot" class="btn btn-secondary">Mevcut Taramayı Kaydet</button>
+        </div>
+
+        <hr class="modal-divider" />
+
+        <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px;">
+          <div style="flex:1">
+            <label id="lblDiffSnapA" style="font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;">1. Tarama (Eski / Baz):</label>
+            <select id="diffSelectA" class="select-control" style="width:100%"></select>
+          </div>
+          <div style="flex:1">
+            <label id="lblDiffSnapB" style="font-size:11px;color:var(--text-muted);display:block;margin-bottom:4px;">2. Tarama (Yeni / Güncel):</label>
+            <select id="diffSelectB" class="select-control" style="width:100%"></select>
+          </div>
+          <button type="button" id="btnRunDiff" class="btn btn-primary" style="margin-top:18px;">Karşılaştır</button>
+        </div>
+
+        <div id="diffResultsContainer" style="margin-top:12px;">
+          <div id="lblDiffEmptyHint" style="color:var(--text-muted);text-align:center;padding:20px;">İki kayıtlı tarama seçip "Karşılaştır" düğmesine basın.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings, Language Selector, Proxy Pool, PageSpeed API & Custom Rules Modal -->
+  <div id="configModal" class="modal-backdrop hidden">
+    <div class="modal-dialog" style="width:800px">
+      <div class="modal-header">
+        <h2 id="lblSettingsModalTitle">Ayarlar, Dil Seçimi, Proxy Havuzu & Özel Kurallar</h2>
+        <button type="button" id="btnCloseModal" class="btn-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <!-- 1. Extensible Multi-Language Selector inside Settings -->
+        <div class="custom-section">
+          <h3 id="lblSettingsLangHeader">Arayüz Dili (Language & Locale)</h3>
+          <p class="section-hint" id="lblSettingsLangHint">Uygulama arayüz dilini seçin. Seçiminiz anında uygulanır ve otomatik kaydedilir (yeni dil paketleri `LOCALE_REGISTRY` üzerinden modüler olarak eklenebilir):</p>
+          <div class="lang-cards-grid" id="langCardsContainer"></div>
+        </div>
+
+        <hr class="modal-divider" />
+
+        <!-- 2. Core Spider & Crawl Limits -->
+        <div class="custom-section">
+          <h3 id="lblSettingsCrawlHeader">Tarama Limitleri & Bot Davranışı</h3>
+          <div class="config-grid" style="margin-top:8px;">
+            <div class="form-field">
+              <label id="lblCfgMaxUrls">Maksimum URL Sınırı (Max URLs)</label>
+              <input type="number" id="cfgMaxUrls" value="500" min="10" max="100000" />
+            </div>
+            <div class="form-field">
+              <label id="lblCfgConcurrency">Eşzamanlı Bağlantı (Concurrency)</label>
+              <input type="number" id="cfgConcurrency" value="8" min="1" max="32" />
+            </div>
+            <div class="form-field">
+              <label id="lblCfgMaxDepth">Maksimum Tarama Derinliği (Max Depth)</label>
+              <input type="number" id="cfgMaxDepth" value="6" min="1" max="25" />
+            </div>
+            <div class="form-field">
+              <label id="lblCfgDelay">İstekler Arası Gecikme / Hız Sınırı (ms)</label>
+              <input type="number" id="cfgRequestDelayMs" value="0" min="0" max="10000" placeholder="0 (Beklemesiz)" />
+            </div>
+            <div class="form-field">
+              <label id="lblCfgInclude">Include Regex (Sadece uyanları tara)</label>
+              <input type="text" id="cfgInclude" placeholder="Örn: /blog/|/catalogue/" />
+            </div>
+            <div class="form-field">
+              <label id="lblCfgExclude">Exclude Regex (Uyanları hariç tut)</label>
+              <input type="text" id="cfgExclude" placeholder="Örn: \?sort=|/tag/|/cart" />
+            </div>
+          </div>
+
+          <div class="form-field" style="margin-bottom:10px;">
+            <label id="lblCfgUserAgent">User-Agent (Tarayıcı / Bot Kimliği)</label>
+            <input type="text" id="cfgUserAgent" value="Froggie/2.2 (+https://github.com/schevko/froggie; compatible; Googlebot/2.1)" />
+          </div>
+
+          <div class="checkbox-row">
+            <label><input type="checkbox" id="cfgRespectRobots" checked /> <span id="lblChkRobots">robots.txt kurallarına uy</span></label>
+            <label><input type="checkbox" id="cfgExternalLinks" checked /> <span id="lblChkExternal">Dış linkleri (External) kontrol et</span></label>
+            <label><input type="checkbox" id="cfgRenderJs" /> <span id="lblChkRenderJs">Headless Chrome ile JS Render et (SPA siteler)</span></label>
+          </div>
+        </div>
+
+        <hr class="modal-divider" />
+
+        <!-- 3. Proxy & IP Routing Configuration -->
+        <div class="custom-section">
+          <h3 id="lblSettingsProxyHeader">Proxy & Bağlantı Yönlendirme (Direct IP vs. Proxy Pool)</h3>
+          <p class="section-hint" id="lblSettingsProxyHint">Varsayılan olarak istekler kendi bilgisayarınızın IP adresinden çıkar. İsterseniz tek bir Proxy veya her istekte sırayla değişen (Rotating) Proxy listesi tanımlayabilirsiniz:</p>
+          <div class="config-grid" style="margin-top:8px;">
+            <div class="form-field">
+              <label id="lblCfgProxyMode">Bağlantı Modu</label>
+              <select id="cfgProxyMode">
+                <option value="direct" id="optProxyDirect">Doğrudan Bağlantı (Kendi Bilgisayarımın IP'si)</option>
+                <option value="single" id="optProxySingle">Tekil HTTP/HTTPS Proxy Kullan</option>
+                <option value="rotating" id="optProxyRotating">Dönen Proxy Havuzu (Rotating Proxy List)</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label id="lblCfgProxyUrl">Tekil Proxy URL (Single Proxy)</label>
+              <input type="text" id="cfgProxyUrl" placeholder="http://kullanici:sifre@192.0.2.10:8080" />
+            </div>
+          </div>
+          <div class="form-field" style="margin-top:6px;">
+            <label id="lblCfgProxyList">Dönen Proxy Havuzu (Her satıra 1 Proxy URL — Rotating seçiliyse her istekte sıradaki kullanılır)</label>
+            <textarea id="cfgProxyList" rows="3" placeholder="http://user:pass@proxy1.example.com:8080&#10;http://user:pass@proxy2.example.com:8080" style="width:100%;background:var(--bg-canvas);border:1px solid var(--border-strong);color:var(--text-primary);font-family:var(--font-mono);font-size:11.5px;padding:6px 8px;border-radius:5px;"></textarea>
+          </div>
+        </div>
+
+        <hr class="modal-divider" />
+
+        <!-- 4. Google PageSpeed Insights & Core Web Vitals API Key -->
+        <div class="custom-section">
+          <h3 id="lblSettingsPsiHeader">Google PageSpeed Insights & Core Web Vitals Yapılandırması</h3>
+          <p class="section-hint" id="lblSettingsPsiHint">Froggie dahili Canlı CWV Motoru ile API anahtarı olmadan da anında LCP, CLS, FCP, TBT, TTFB ve Performans/SEO skorlarını ölçer. Resmi Google Lighthouse v5 API kotası için isteğe bağlı API anahtarı girebilirsiniz:</p>
+          <div class="config-grid">
+            <div class="form-field">
+              <label id="lblCfgPsiKey">Google PageSpeed API Anahtarı (İsteğe Bağlı)</label>
+              <input type="password" id="cfgPsiApiKey" placeholder="AIzaSy... (Boş bırakılırsa Canlı CWV + Genel Kota kullanılır)" />
+            </div>
+            <div class="form-field">
+              <label id="lblCfgPsiStrategy">Varsayılan Test Cihazı Profili</label>
+              <select id="cfgPsiStrategy">
+                <option value="mobile">Mobil (Google Mobile-First Indexing)</option>
+                <option value="desktop">Masaüstü (Desktop)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <hr class="modal-divider" />
+
+        <!-- 5. Custom Search & Extraction -->
+        <div class="custom-section">
+          <h3 id="lblSettingsSearchHeader">1. Aho-Corasick Özel Metin Arama (Custom Search)</h3>
+          <div id="customSearchList" class="rule-list"></div>
+          <button type="button" id="btnAddSearchRule" class="btn btn-tool">+ Yeni Arama Kuralı Ekle</button>
+        </div>
+
+        <hr class="modal-divider" />
+
+        <div class="custom-section">
+          <h3 id="lblSettingsExtractHeader">2. Özel Veri Çıkarımı (CSS Selector / Regex Custom Extraction)</h3>
+          <div id="customExtractList" class="rule-list"></div>
+          <button type="button" id="btnAddExtractRule" class="btn btn-tool">+ Yeni Veri Çıkarım Kuralı Ekle</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <span class="mono-cell" style="font-size:11px;color:var(--text-muted);">Froggie v2.2 • MIT License</span>
+        <button type="button" id="btnSaveConfig" class="btn btn-primary">Ayarları Kaydet</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "froggie",
+  "version": "2.2.0",
+  "description": "Froggie — High-performance open-source technical SEO spider & Core Web Vitals desktop suite (FastBitSet + HTMLRewriter + MinHash + Aho-Corasick + PageRank + SQLite WAL)",
+  "author": "schevko (https://github.com/schevko/froggie)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/schevko/froggie.git"
+  },
+  "scripts": {
+    "start": "/Users/sevketerer/.local/bin/bun run engine/server.ts",
+    "app": "open '/Users/sevketerer/Applications/Froggie.app'",
+    "set-icon": "bash scripts/set-icon.sh",
+    "build:release": "bash scripts/build-release.sh"
+  }
+}
