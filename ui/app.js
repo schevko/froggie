@@ -697,22 +697,22 @@ function updateProxyStatusFooter() {
   }
 }
 
-// About Modal with schevko & MIT Open Source License (Zero REA mentions)
+// About Modal — Froggie Open Source & MIT License (Zero REA mentions)
 function renderAboutModalContent() {
   const body = document.getElementById("aboutModalBody");
   const title = document.getElementById("aboutModalTitle");
   const isTr = state.lang === "tr";
 
   title.textContent = isTr
-    ? "Froggie v2.2 — Hakkında, Açık Kaynak Repo & MIT Lisansı"
-    : "About Froggie v2.2 — Open Source Repo & MIT License";
+    ? "Froggie — Hakkında, Açık Kaynak Repo & MIT Lisansı"
+    : "About Froggie — Open Source Repo & MIT License";
 
   body.innerHTML = `
     <div style="display:flex;flex-direction:column;gap:14px;line-height:1.55;">
       <div style="background:var(--bg-canvas);border:1px solid var(--border-strong);padding:16px;border-radius:8px;display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;">
         <div>
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-            <span class="badge badge-ok" style="font-size:11.5px;padding:2px 8px;">v2.2 Universal</span>
+            <span class="badge badge-ok" style="font-size:11.5px;padding:2px 8px;">Universal</span>
             <span class="badge badge-info" style="font-size:11.5px;padding:2px 8px;">MIT Open Source License</span>
           </div>
           <h3 style="color:var(--text-primary);font-size:15px;margin-bottom:4px;">Froggie</h3>
@@ -728,9 +728,8 @@ function renderAboutModalContent() {
           <div style="font-size:10.5px;text-transform:uppercase;color:var(--text-muted);font-weight:700;margin-bottom:4px;">
             ${isTr ? "GitHub Repo & Lisans" : "GitHub Repo & License"}
           </div>
-          <div style="font-weight:700;color:var(--signal-emerald);font-size:13.5px;">schevko</div>
-          <div class="mono-cell" style="color:var(--signal-blue);font-size:11.5px;margin-top:2px;">github.com/schevko/froggie</div>
-          <div class="mono-cell" style="color:var(--text-secondary);font-size:11.5px;margin-top:2px;">github.com/schevko</div>
+          <div style="font-weight:700;color:var(--signal-emerald);font-size:13.5px;">Froggie Open Source</div>
+          <div class="mono-cell" style="margin-top:4px;"><a href="https://github.com/schevko/froggie" target="_blank" rel="noopener" style="color:var(--signal-blue);font-size:11.5px;text-decoration:none;">GitHub Repository ↗</a></div>
         </div>
       </div>
 
@@ -755,7 +754,7 @@ function renderAboutModalContent() {
 
       <div style="background:var(--bg-canvas);border:1px solid var(--border-hairline);padding:12px 14px;border-radius:6px;">
         <div style="font-size:11px;font-weight:700;color:var(--text-secondary);margin-bottom:6px;text-transform:uppercase;">
-          MIT License — Copyright (c) 2026 schevko (https://github.com/schevko/froggie)
+          MIT License — Copyright (c) 2026 Froggie
         </div>
         <pre style="font-family:var(--font-mono);font-size:11px;color:var(--text-muted);white-space:pre-wrap;line-height:1.45;">Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, subject to the following conditions:
 
